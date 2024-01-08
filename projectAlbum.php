@@ -10,63 +10,73 @@ $rsHeroes= $connDB->ejecutarConsulta($query);
 $destinoImg = "fotos/";
 
 
-if($_POST){
+        /**
+         * Inserción de imagenes(solo el nombre) en la base de datos y en el directorio imagenesINICIO
+         */
+        if($_POST){
 
-    global $connDB;
-    global $destinoImg;
+            global $connDB;
+            global $destinoImg;
 
-    $nombreProyecto = $_POST['projectName'];
-    $descripcionProyecto =  $_POST['descripcion'];  
-    $nombreImagen = $_FILES['imageName']['name'];    
-    $nombreTmp = $_FILES['imageName']['tmp_name'];
+            $nombreProyecto = $_POST['projectName'];
+            $descripcionProyecto =  $_POST['descripcion'];  
+            $nombreImagen = $_FILES['imageName']['name'];    
+            $nombreTmp = $_FILES['imageName']['tmp_name'];
 
-    //$destinoImg = "fotos/";
+            //$destinoImg = "fotos/";
 
-    $query0 = "INSERT INTO `dota_database`.`heroes_imagenes` (id_hero,nombre_img,img,descripcion) VALUES (NULL,'$nombreProyecto','$nombreImagen','$descripcionProyecto')";
-     
-    //Guardado de imagenes
-    $resultadoGuardado = move_uploaded_file($nombreTmp,$destinoImg.$nombreImagen);
-    if(!$resultadoGuardado){
-        echo "Guardado erroneo";
-    }else{
-        echo "Guardado Exito";
-    }
-    
-    $connDB->ejecutarConsulta($query0);
+            $query0 = "INSERT INTO `dota_database`.`heroes_imagenes` (id_hero,nombre_img,img,descripcion) VALUES (NULL,'$nombreProyecto','$nombreImagen','$descripcionProyecto')";
+            
+            //Guardado de imagenes
+            $resultadoGuardado = move_uploaded_file($nombreTmp,$destinoImg.$nombreImagen);
+            if(!$resultadoGuardado){
+                echo "Guardado erroneo";
+            }else{
+                echo "Guardado Exito";
+            }
+            
+            $connDB->ejecutarConsulta($query0);
 
-    header("location:projectAlbum.php");
-}
+            header("location:projectAlbum.php");
+        }
+        /**
+         * Inserción de imagenes(solo el nombre) en la base de datos y en el directorio imagenesFIN
+         */
 
-if($_GET){
 
-    global $connDB;
 
-    global $destinoImg;
-    //$destinoImg = "fotos/";
-    $idBorrar =  $_GET['borrar'];
-    
-    $query2 = "SELECT img from heroes_imagenes WHERE id_hero = $idBorrar";
-    $imagen = $connDB->ejecutarConsulta($query2);
-    $imagenBorrar = $imagen[0]['img'];
-    // echo "imagenBorrar :";
-    // var_dump($imagenBorrar);
+        if($_GET){
 
-    //echo "destinoBorrar: ".$destinoImg.$imagenBorrar;
+            global $connDB;
 
-   $resultadoBorrado = unlink($destinoImg.$imagenBorrar);
+            global $destinoImg;
+            //$destinoImg = "fotos/";
+            $idBorrar =  $_GET['borrar'];
+            
+            $query2 = "SELECT img from heroes_imagenes WHERE id_hero = $idBorrar";
+            $imagen = $connDB->ejecutarConsulta($query2);
+            $imagenBorrar = $imagen[0]['img'];
+            // echo "imagenBorrar :";
+            // var_dump($imagenBorrar);
 
-   if($resultadoBorrado){
-       echo "<br/>"."Borrado con Exito"."<br/>";
-    }else{
-    echo "<br/>"."Borrado erroneo"."<br/>";
-}
+            //echo "destinoBorrar: ".$destinoImg.$imagenBorrar;
 
-    $query1 = "DELETE FROM `dota_database`.`heroes_imagenes` WHERE (`id_hero` = '$idBorrar')";
-    $connDB->ejecutarConsulta($query1);
 
-    header("location:projectAlbum.php");
+            //Borrar imagen 
+        $resultadoBorrado = unlink($destinoImg.$imagenBorrar);
 
-}
+        if($resultadoBorrado){
+            echo "<br/>"."Borrado con Exito"."<br/>";
+            }else{
+            echo "<br/>"."Borrado erroneo"."<br/>";
+        }
+
+            $query1 = "DELETE FROM `dota_database`.`heroes_imagenes` WHERE (`id_hero` = '$idBorrar')";
+            $connDB->ejecutarConsulta($query1);
+
+            header("location:projectAlbum.php");
+
+        }
 ?>
 
 
